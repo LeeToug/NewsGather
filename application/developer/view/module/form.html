@@ -1,0 +1,73 @@
+<form class="layui-form layui-form-pane" action="{:url()}" method="post" id="editForm">
+    <div class="layui-form-item">
+        <label class="layui-form-label">版本号</label>
+        <div class="layui-input-inline w300">
+            <input type="text" class="layui-input field-app_version" name="app_version" lay-verify="required" autocomplete="off" placeholder="请输入版本号">
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            格式采用三段式：<span class="help-tips" data-title="主版本号【位数变化：1-99】：当模块出现大更新或者很大的改动，比如整体架构发生变化。此版本号会变化。">主版本号<span>.<span class="help-tips" data-title="次版本号【位数变化：0-999】：当模块功能有新增或删除，此版本号会变化，如果仅仅是补充原有功能时，此版本号不变化。">次版本号<span>.<span class="help-tips" data-title="修订版本号【位数变化：0-999】：一般是 Bug 修复或是一些小的变动，功能上没有大的变化，修复一个严重的bug即发布一个修订版。">修订版本号<span><span>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">升级日志</label>
+        <div class="layui-input-inline w600">
+            <textarea name="update_log" rows="10" lay-verify="required" class="layui-textarea field-update_log"></textarea>
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            一行一条，请以回车键[enter]换行
+            <br>参考示例：
+            <br>[修复] 已知BUG
+            <br>[新增] 神奇的功能
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">更新文件</label>
+        <div class="layui-input-inline w600">
+            <textarea name="update_file" rows="10" class="layui-textarea field-update_file">/application/{:input('param.app_name')}/info.php
+</textarea>
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            一行一条，请以回车键[enter]换行
+            <br><strong class="red">{:ROOT_DIR}application/{:input('param.app_name')}/info.php</strong> 必须存在
+            <br>参考示例：
+            <br><strong class="red">{:ROOT_DIR}application/</strong>demo/view/block/head.html
+            <br><strong class="red">{:ROOT_DIR}static/</strong>demo/css/style.css
+            <br><strong class="red">{:ROOT_DIR}theme/</strong>demo/default/index/index.html
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">删除文件</label>
+        <div class="layui-input-inline w600">
+            <textarea name="delete_file" rows="5" class="layui-textarea field-delete_file"></textarea>
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            一行一条，请以回车键[enter]换行
+            <br>参考示例：
+            <br><strong class="red">{:ROOT_DIR}application/</strong>demo/view/block/head.html
+            <br><strong class="red">{:ROOT_DIR}application/</strong>demo/view/block/footer.html
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">SQL</label>
+        <div class="layui-input-inline w600">
+            <textarea name="update_sql" rows="20" class="layui-textarea field-update_sql"></textarea>
+        </div>
+        <div class="layui-form-mid layui-word-aux">
+            每句SQL以“;”结束，多句SQL请以回车键[enter]换行
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="hidden" class="field-id" name="id">
+            <input type="hidden" class="field-app_name" name="app_name" value="{:input('param.app_name')}">
+            <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">提交</button>
+            <a href="{:url('versions?app_name='.input('param.app_name'))}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
+        </div>
+    </div>
+</form>
+{include file="system@block/layui" /}
+<script>
+layui.use(['func'], function() {
+    layui.func.assign({:json_encode($formData)});
+});
+</script>

@@ -1,0 +1,51 @@
+<div class="page-toolbar">
+    <div class="page-filter fr">
+        <form class="layui-form layui-form-pane" action="{:url()}" method="get" id="hisi-table-search">
+            <div class="layui-form-item">
+                <label class="layui-form-label">搜索</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="keyword" value="{:input('get.keyword')}" lay-verify="required" placeholder="请输入链接网站" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="layui-btn-group fl">
+        <a href="{:url('add')}" class="layui-btn layui-btn-xs layui-btn-normal j-iframe-pop" hisi-data="{width: '470px', height: '300px'}"><i class="aicon ai-tianjia"></i>友情链接添加</a>
+    </div>
+</div>
+<table id="dataTable"></table>
+{include file="system@block/layui" /}
+<script type="text/html" title="操作按钮模板" id="buttonTpl">
+    {{# if (d.system != 1) { }}
+    <a href="{:url('edit')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-normal j-iframe-pop" title="修改" hisi-data="{width: '470px', height: '300px'}">修改</a><a href="{:url('del')}?id={{ d.id }}" class="layui-btn layui-btn-xs layui-btn-danger j-tr-del">删除</a>
+    {{# } else { }}
+    <a href="javascript:void(0);" class="layui-btn layui-btn-xs layui-btn-normal layui-disabled">修改</a><a href="javascript:void(0);"  class="layui-btn layui-btn-xs layui-btn-danger layui-disabled">删除</a>
+    {{# } }}
+</script>
+
+<script type="text/javascript">
+    layui.use(['table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#dataTable'
+            ,url: '{:url()}' //数据接口
+            ,page: true //开启分页
+            ,skin: 'row'
+            ,even: true
+            ,limit: 20
+            ,text: {
+                none : '暂无相关数据'
+            }
+            ,cols: [[ //表头
+                {type:'checkbox'}
+                ,{field: 'title', title: '链接网站'}
+                ,{field: 'link', title: '链接路径'}
+                ,{title: '操作', width: 120, templet: '#buttonTpl'}
+            ]]
+        });
+    });
+</script>
+
+
+

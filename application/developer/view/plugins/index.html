@@ -1,0 +1,43 @@
+<div class="layui-form">
+    <table class="layui-table mt10" lay-even="" lay-skin="row">
+        <colgroup>
+            <col>
+            <col width="100">
+            <col width="310">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>插件信息</th>
+                <th>插件版本</th>
+                <th>操作</th>
+            </tr> 
+        </thead>
+        <tbody>
+            {volist name="data_list" id="vo" empty="<tr><td colspan='3' align='center' height='100'>未发现相关插件</td></tr>"}
+            <tr>
+                <td>
+                    <div class="module-list-info">
+                        {if condition="$vo['icon']"}
+                            <img src="{$vo['icon']}" width="80" height="80">
+                        {else /}
+                            <img src="/static/admin/image/app.png" width="80" height="80">
+                        {/if}
+                        <div class="txt">
+                            <h3>{$vo['title']}</h3>
+                            <p><span>服务商：</span><a href="">{$vo['author']}</a><br><span>简&nbsp;&nbsp;&nbsp;&nbsp;介：</span>{$vo['intro']}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>{$vo['version']}</td>
+                <td>
+	                <div class="layui-btn-group">
+	                    <a href="{:url('design?id='.$vo['id'])}" class="layui-btn layui-btn-normal layui-btn-sm">设计插件</a>
+	                	<a href="{:url('versions?app_name='.$vo['name'])}" class="layui-btn layui-btn-normal layui-btn-sm">版本管理</a>
+	                </div>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+{include file="system@block/layui" /}

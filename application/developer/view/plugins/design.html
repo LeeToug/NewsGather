@@ -1,0 +1,191 @@
+<form class="layui-form" action="{:url()}" method="post">
+<div class="layui-tab-item layui-show">
+        <fieldset class="layui-elem-field layui-field-title">
+          <legend>插件基本信息</legend>
+        </fieldset>
+        <div class="layui-form-item">
+            <label class="layui-form-label">插件名</label>
+            <div class="layui-input-inline w300">
+                <input type="text" class="layui-input field-name" name="name" lay-verify="required" autocomplete="off" placeholder="请输入插件名">
+            </div>
+            <div class="layui-form-mid layui-word-aux">插件名称只能为字母</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">插件标题</label>
+            <div class="layui-input-inline w300">
+                <input type="text" class="layui-input field-title" name="title" lay-verify="required" autocomplete="off" placeholder="请输入插件标题">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">插件标识</label>
+            <div class="layui-input-inline w300">
+                <input type="text" class="layui-input field-identifier" name="identifier" lay-verify="required" autocomplete="off" placeholder="请输入插件标识">
+            </div>
+            <div class="layui-form-mid layui-word-aux">格式：插件名.[应用市场ID].plugins.[应用市场分支ID]</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数据表前缀</label>
+            <div class="layui-input-inline w300">
+                <input type="text" class="layui-input field-db_prefix" name="db_prefix" autocomplete="off" placeholder="有数据库时填写">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">插件图标</label>
+                <div class="layui-input-inline upload">
+                    <button type="button" class="layui-btn layui-btn-primary layui-upload" lay-type="image" lay-data="{url: '{:url('icon?id='.$formData['id'])}', exts:'png', accept:'image'}">上传插件图标</button>
+                    <input type="hidden" class="upload-input field-icon" name="icon">
+                    {if condition="!empty($formData['icon'])"}
+                    <img src="{$formData['icon']}?v={:time()}" style="border-radius:5px;border:1px solid #ccc" width="36" height="36">
+                    {else /}
+                    <img src="" style="display:none;border-radius:5px;border:1px solid #ccc" width="36" height="36">
+                    {/if}
+                </div>
+                <div class="layui-form-mid layui-word-aux">PNG格式，图标尺寸：200 x 200</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">插件描述</label>
+            <div class="layui-input-inline w300">
+                <textarea  class="layui-textarea field-intro" name="intro" autocomplete="off" placeholder="请填写插件描述"></textarea>
+            </div>
+            <div class="layui-form-mid layui-word-aux"></div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开发者</label>
+            <div class="layui-input-inline w300">
+                <input type="text" class="layui-input field-author" name="author" autocomplete="off" placeholder="请输入开发者">
+            </div>
+            <div class="layui-form-mid layui-word-aux">建议填写</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">开发者网址</label>
+            <div class="layui-input-inline w300">
+                <input type="text" class="layui-input field-url" name="url" autocomplete="off" placeholder="请输入开发者网址">
+            </div>
+            <div class="layui-form-mid layui-word-aux">建议填写</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">版本号</label>
+            <div class="layui-input-inline w300">
+                <input type="text" class="layui-input field-version" name="version" value="1.0.0" lay-verify="required" autocomplete="off" placeholder="请输入版本号">
+            </div>
+            <div class="layui-form-mid layui-word-aux">版本号格式采用三段式：主版本号.次版本号.修订版本号</div>
+        </div>
+</div>
+<div class="layui-tab-item">
+    <fieldset class="layui-elem-field layui-field-title">
+      <legend>插件配置设计</legend>
+    </fieldset>
+    <div class="layui-form-item layui-form">
+        <table class="layui-table" lay-even="" lay-skin="row">
+            <thead>
+                <tr>
+                    <th>排序[必填]</th>
+                    <th>配置名称[必填]</th>
+                    <th>配置变量名[必填]</th>
+                    <th>配置类型[必填]</th>
+                    <th>配置选项[选填]</th>
+                    <th>默认值[选填]</th>
+                    <th>配置提示[选填]</th>
+                    <th width="50">操作</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {volist name="plugins_info['config']" id="vo"}
+                <tr class="config-tr">
+                    <td><input type="text" name="config[sort][]" class="layui-input" lay-verify="required" value="{$vo['sort']}"></td>
+                    <td><input type="text" name="config[title][]" class="layui-input" lay-verify="required" value="{$vo['title']}"></td>
+                    <td><input type="text" name="config[name][]" class="layui-input" lay-verify="required" value="{$vo['name']}"></td>
+                    <td>
+                        <select name="config[type][]" type="select">
+                        {volist name=":form_type()" id="v"}
+                            <option value="{$key}" {if condition="$key eq $vo['type']"}selected{/if}>[{$key}]{$v}</option>
+                        {/volist}
+                        </select>
+                    </td>
+                    <td>
+                        <textarea name="config[options][]" class="layui-textarea" style="min-height:20px;padding:0;" placeholder="选项值:选项名">{volist name="vo['options']" id="v"}{$key}:{$v}{php}echo "\r\n";{/php}{/volist}</textarea>
+                    </td>
+                    <td>
+                        <textarea name="config[value][]" class="layui-textarea" style="min-height:20px;padding:0;" placeholder="默认值">{$vo['value']}</textarea>
+                    </td>
+                    <td><input type="text" name="config[tips][]" class="layui-input" value="{$vo['tips']}"></td>
+                    <td><a href="javascript:;" class="tr-del">删除</a></td>
+                </tr>
+                {/volist}
+                <tr>
+                    <td colspan="8" style="background-color:#f8f8f8">
+                        <a class="layui-btn layui-btn-sm layui-btn-normal j-add-tr" data-tpl="config">添加配置</a>
+                        <span class="layui-word-aux">提示：当配置类型为单选按钮、多选框、下拉框、开关的时候，配置选项为必填，参考格式：选项值:选项名，多个选项请换行。</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="layui-tab-item">
+    <fieldset class="layui-elem-field layui-field-title">
+      <legend>插件菜单设计</legend>
+    </fieldset>
+</div>
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        <input type="hidden" name="id" class="field-id" />
+        <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="formSubmit">提交</button>
+        <a href="{:url('index')}" class="layui-btn layui-btn-primary ml10"><i class="aicon ai-fanhui"></i>返回</a>
+    </div>
+</div>
+</form>
+<script type="text/html" id="configTr">
+    <tr>
+        <td><input type="text" name="config[sort][]" class="layui-input" lay-verify="required" value="{i}"></td>
+        <td><input type="text" name="config[title][]" class="layui-input" lay-verify="required"></td>
+        <td><input type="text" name="config[name][]" class="layui-input" lay-verify="required"></td>
+        <td>
+            <select name="config[type][]" class="field-type" type="select">
+            {volist name=":form_type()" id="v"}
+                <option value="{$key}">[{$key}]{$v}</option>
+            {/volist}
+            </select>
+        </td>
+        <td><textarea name="config[options][]" class="layui-textarea" style="min-height:20px;padding:0;" placeholder="选项值:选项名"></textarea></td>
+        <td><textarea name="config[value][]" class="layui-textarea" style="min-height:20px;padding:0;" placeholder="默认值"></textarea></td>
+        <td><input type="text" name="config[tips][]" class="layui-input" placeholder="提示"></td>
+        <td><a href="javascript:;" class="tr-del">删除</a></td>
+    </tr>
+</script>
+{include file="system@block/layui" /}
+<script type="text/javascript">
+    layui.use(['jquery', 'form', 'func', 'upload'], function(){
+        var $ = layui.jquery, form = layui.form, upload = layui.upload;
+        layui.func.assign({:json_encode($formData)});
+
+        upload.render({
+            elem: '.layui-upload',
+            url: '{:url('icon?id='.$formData['id'])}'
+            ,method: 'post'
+            ,before: function(input) {
+                layer.msg('文件上传中...', {time:3000000});
+            },done: function(res, index, upload) {
+                var obj = this.item;
+                if (res.code == 0) {
+                    layer.msg(res.msg);
+                    return false;
+                }
+                layer.closeAll();
+                var input = $(obj).parents('.upload').find('.upload-input');
+                input.siblings('img').attr('src', res.msg).show();
+            }
+        });
+
+        $('.j-add-tr').click(function(){
+            var that = $(this), tpl = $('#'+that.attr('data-tpl')+'Tr').html(), len = that.parents('tbody').find('tr').length;
+            that.parents('tr').before(tpl.replace(/{i}/g, len+99));
+            form.render();
+        });
+
+        $(document).on('click', '.tr-del', function(){
+            $(this).parent().parent().remove();
+        });
+    });
+</script>
+<script>

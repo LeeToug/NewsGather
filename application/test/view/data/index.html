@@ -1,0 +1,182 @@
+<div class="page-toolbar">
+    <div class="page-filter fr">
+
+    </div>
+    <form class="layui-form layui-form-pane"  id="editForm">
+        <div class="layui-inline">
+            <label class="layui-form-label">城市选择</label>
+            <div class="layui-input-inline">
+                <select name="type_id" class="field-type_id" lay-verify="required" lay-filter="sadaS" lay-search="" style="z-index: 15; position: relative">
+                    {volist name="city" id="vo"}
+                    <option value="{$vo['id']}" title="{$vo['name']}">{$vo['name']}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+
+        <input type="hidden" name="city" id="city">
+        <input type="hidden" name="cate" id="cate">
+        <input type="hidden" name="url" id="url" value="{:url('gather/index')}">
+
+        <div class="layui-inline">
+            <label class="layui-form-label">分类选择</label>
+            <div class="layui-input-inline">
+                <select name="type_id" class="field-type_id" lay-verify="required" lay-filter="sadaC" lay-search="" style="z-index: 15; position: relative">
+                    <option value="">全部</option>
+                    {volist name="cate" id="vo" key='k'}
+                    <optgroup label="{$vo.title}">
+                        {volist name="$vo['son']" id="vs" key='k'}
+                        <option value="{$vs.id}">{$vs.title}</option>
+                        {/volist}
+                    </optgroup>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+
+
+        <div class="layui-inline" style="margin-left: 35%">
+            <div class="layui-input-inline">
+                <select name="type_id" id="select1" class="field-type_id" lay-verify="required"  lay-filter="sadaP" lay-search="" style="z-index: 15; position: relative">
+                    {volist name="jaeger_url" id="vo"}
+                    <option value="{$vo['url']}"  title="{$vo['name']}">{$vo['name']}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <!--<a style="margin-left: 55%" href="{:url('gather/index')} " class="layui-btn  layui-btn-normal" title="采集数据">采集数据</a>-->
+        <a  class="layui-btn  layui-btn-normal" id="onclick" title="采集数据">采集数据</a>
+    </form>
+
+
+
+
+
+</div>
+
+<table id="dataTable"></table>
+{include file="system@block/layui" /}
+<script type="text/html" id="statusTpl">
+    <input type="checkbox" name="status" value="{{ d.status }}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" {{ d.status == 1 ? 'checked' : '' }} {{ d.system == 1 ? 'disabled' : '' }} data-href="{:url('status')}?id={{ d.id }}">
+</script>
+<script type="text/html" title="操作按钮模板" id="buttonTpl">
+    {{# if (d.system != 1) { }}
+    <a href="{:url('edit')}?id={{ d.id }}&city_id={{ d.city_id }}" class="layui-btn layui-btn-xs layui-btn-normal j-iframe-pop" title="修改" hisi-data="{width: '470px', height: '600px'}">修改</a>
+    <a href="{:url('del')}?id={{ d.id }}&city_id={{ d.city_id }}" class="layui-btn layui-btn-xs layui-btn-danger ">删除</a>
+    {{# } else { }}
+    <a href="javascript:void(0);" title="" class="layui-btn layui-btn-xs layui-btn-normal layui-disabled">修改</a><a href="javascript:void(0);" title="" class="layui-btn layui-btn-xs layui-btn-danger layui-disabled">删除</a>
+    {{# } }}
+</script>
+<script type="text/javascript" src="__JS__/jquery.min.js"></script>
+<script type="text/javascript">
+
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate,
+            form = layui.form;
+        form.on('select(sadaS)', function(data){
+            var data_v=data.value;
+            var city=document.getElementById('city').value=data_v;
+            var cate=document.getElementById('cate').value;
+            layui.use(['table'], function() {
+                var table = layui.table;
+                table.render({
+                    elem: '#dataTable'
+                    ,url: '{:url()}?keyword='+city+'&cate='+cate+'' //数据接口
+                    ,page: true //开启分页
+                    ,skin: 'row'
+                    ,even: true
+                    ,limit: 20
+                    ,text: {
+                        none : '暂无相关数据'
+                    }
+                    ,cols: [[ //表头
+                        {field: 'title', title: '标题'}
+                        ,{field: 'brief', title: '简述'}
+                        ,{field: 'price', title: '价格'}
+                        ,{field: 'date', title: '日期'}
+                        ,{field: 'name', title: '城市'}
+                        ,{field: 'c_title', title: '所属分类'}
+                        // ,{field: 'status', title: '状态', width: 100, templet: '#statusTpl'}
+                        ,{title: '操作', width: 120, templet: '#buttonTpl'}
+                    ]]
+                });
+            });
+
+        });
+
+        form.on('select(sadaC)', function(data){
+            var data_v=data.value;
+            var cate=document.getElementById('cate').value=data_v;
+            var city=document.getElementById('city').value;
+            layui.use(['table'], function() {
+                var table = layui.table;
+                table.render({
+                    elem: '#dataTable'
+                    ,url: '{:url()}?keyword='+city+'&cate='+cate+'' //数据接口
+                    ,page: true //开启分页
+                    ,skin: 'row'
+                    ,even: true
+                    ,limit: 20
+                    ,text: {
+                        none : '暂无相关数据'
+                    }
+                    ,cols: [[ //表头
+                        {field: 'title', title: '标题'}
+                        ,{field: 'brief', title: '简述'}
+                        ,{field: 'price', title: '价格'}
+                        ,{field: 'date', title: '日期'}
+                        ,{field: 'name', title: '城市'}
+                        ,{field: 'c_title', title: '所属分类'}
+                        // ,{field: 'status', title: '状态', width: 100, templet: '#statusTpl'}
+                        ,{title: '操作', width: 120, templet: '#buttonTpl'}
+                    ]]
+                });
+            });
+        });
+
+
+        form.on('select(sadaP)', function(data){
+            var data_v=data.value;
+            $("#url").val(data_v);
+        });
+
+        $("#onclick").on("click",function () {
+
+              var url=$("#url").val();
+
+               window.location.href=url;
+        });
+
+    });
+
+    layui.use(['table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#dataTable'
+            ,url: '{:url()}' //数据接口
+            ,page: true //开启分页
+            ,skin: 'row'
+            ,even: true
+            ,limit: 20
+            ,text: {
+                none : '暂无相关数据'
+            }
+            ,cols: [[ //表头
+                {type:'checkbox'}
+                ,{field: 'title', title: '标题'}
+                ,{field: 'brief', title: '简述'}
+                ,{field: 'price', title: '价格'}
+                ,{field: 'date', title: '日期'}
+                ,{field: 'name', title: '城市'}
+                ,{field: 'c_title', title: '所属分类'}
+                // ,{field: 'status', title: '状态', width: 100, templet: '#statusTpl'}
+                ,{title: '操作', width: 120, templet: '#buttonTpl'}
+            ]]
+        });
+    });
+
+
+</script>
+
+
+

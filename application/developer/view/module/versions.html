@@ -1,0 +1,80 @@
+<div class="page-toolbar">
+    <div class="layui-btn-group fl">
+        <a href="{:url('index')}" class="layui-btn layui-btn-primary"><i class="aicon ai-fanhui"></i>返回</a>
+        <a href="{:url('addVersion')}?app_name={:input('param.app_name')}" class="layui-btn layui-btn-primary"><i class="aicon ai-tianjia"></i>发布新版本</a>
+    </div>
+</div>
+<form id="pageListForm">
+<div class="layui-form">
+    <table class="layui-table mt10" lay-even="" lay-skin="row">
+        <thead>
+            <tr>
+                <th width="60">版本号</th>
+                <th>更新日志</th>
+                <th>更新文件</th>
+                <th>补丁包</th>
+                <th>安装包</th>
+                <th width="60">发布状态</th>
+                <th>操作</th>
+            </tr> 
+        </thead>
+        <tbody>
+            {volist name="data['list']" id="v"}
+            {php}
+                $v['update_log'] = parse_attr($v['update_log']);
+                $v['update_file'] = parse_attr($v['update_file']);
+            {/php}
+            <tr>
+                <td>{$v['app_version']}</td>
+                <td>
+                    {volist name="v['update_log']" id="vv" offset="0" length="3"}
+                    - {$vv}<br>
+                    {/volist}
+                    {if condition="count($v['update_log']) gt 3"}
+                        <a href="javascript:;" class="j-show-log mcolor2">点此查看更多...</a>
+                    {/if}
+                    <div style="display:none">
+                        {volist name="v['update_log']" id="vv"}
+                        - {$vv}<br>
+                        {/volist}
+                    </div>
+                </td>
+                <td>
+                    {volist name="v['update_file']" id="vv" offset="0" length="3"}
+                    {$vv}<br>
+                    {/volist}
+                    {if condition="count($v['update_file']) gt 3"}
+                        <a href="javascript:;" class="j-show-log mcolor2">点此查看更多...</a>
+                    {/if}
+                    <div style="display:none">
+                        {volist name="v['update_file']" id="vv"}
+                        {$vv}<br>
+                        {/volist}
+                    </div>
+                </td>
+                <td>{if condition="$v['upgrade_package']"}<a href="{$v['upgrade_package']}" target="_blank">点此下载</a>{else /}---{/if}</td>
+                <td>{if condition="$v['install_package']"}<a href="{$v['install_package']}" target="_blank">点此下载</a>{else /}---{/if}</td>
+                <td><input type="checkbox" name="status" {if condition="$v['status'] eq 1"}checked=""{/if} value="{$v['status']}" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|关闭" data-href="{:url('status?hisiTable=developer_versions&id='.$v['id'])}"></td>
+                <td>
+                    <div class="layui-btn-group">
+                        <a href="{:url('editVersion?id='.$v['id'].'&app_name='.input('param.app_name'))}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                        <a href="{:url('package?id='.$v['id'])}" class="layui-btn layui-btn-normal layui-btn-sm j-ajax">版本打包</a>
+                        <a data-href="{:url('delVersion?table=developer_versions&id='.$v['id'])}" class="layui-btn layui-btn-danger layui-btn-sm j-tr-del">删除</a>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+</form>
+{include file="system@block/layui" /}
+<script>
+layui.use(['jquery', 'layer'], function() {
+    var $ = layui.jquery, layer = layui.layer;
+    $(document).on('click', '.j-show-log', function(){
+        var that = $(this);
+        layer.open({title:'查看更多', content:that.siblings('div').html(), area: ['500px', '400px'], btn:['关闭']});
+    });
+});
+</script>

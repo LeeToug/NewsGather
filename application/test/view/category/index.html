@@ -1,0 +1,37 @@
+
+{volist name="data" id="v" key="k"}
+<div class="layui-tab-item layui-form menu-dl {if condition="$k eq 1"}layui-show{/if}">
+<form class="page-list-form">
+    <dl class="menu-dl1 menu-hd mt10">
+        <dt>分类名字</dt>
+        <dd>
+            <span class="hd">排序</span>
+            <span class="hd3">操作</span>
+        </dd>
+    </dl>
+    {volist name="v['son']" id="vv" key="kk"}
+    <dl class="menu-dl1">
+        <dt>
+            <div class="layui-unselect layui-form-checkbox" lay-skin="primary"><span>{$vv['title']}</span></div>
+            <input type="text" class="menu-sort j-ajax-input" name="level[{$kk}]"  onkeyup="value=value.replace(/[^\d]/g,'')" value="{$vv['level']}" data-value="{$vv['level']}" data-href="{:url('level?table=admin_menu&id='.$vv['id'])}">
+            <div class="menu-btns">
+                <a href="{:url('label/index',['keyword'=>$vv['id']])}" class="layui-btn layui-btn-xs layui-btn-primary" title="下属标签">下属标签</a>
+                <a href="{:url('edit?id='.$vv['id'])}" class="layui-btn layui-btn-xs layui-btn-normal j-iframe-pop" title="编辑" hisi-data="{width: '470px', height: '200px'}"><i class="layui-icon">&#xe642;</i></a>
+            </div>
+        </dt>
+    </dl>
+    {php}
+    $kk++;
+    {/php}
+    {/volist}
+</form>
+</div>
+{/volist}
+
+
+{include file="system@block/layui" /}
+
+
+
+
+
